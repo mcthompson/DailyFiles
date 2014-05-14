@@ -303,9 +303,11 @@ namespace Daily_Files
                     else
                     {
                         logBox.AppendText(Environment.NewLine);
+                        logBox.AppendText("There is no archive for: ");
                         logBox.AppendText(WeekdayFilePath(i));
                     }
                 }
+                Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files 
             }
         }
     }
