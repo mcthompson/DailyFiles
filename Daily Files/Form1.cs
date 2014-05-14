@@ -41,13 +41,13 @@ namespace Daily_Files
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Checking for EXD files...");
             if(((File.Exists(exdFile(0))) == true) && (((today == DayOfWeek.Tuesday) || (today == DayOfWeek.Wednesday) || (today == DayOfWeek.Thursday)
-            || (today == DayOfWeek.Friday))))
+            || (today == DayOfWeek.Friday)))) //If it's not monday, just check if there is an EXD file for that day
             {
                 sendEmail();
             }
 
             else if ((today == DayOfWeek.Monday) && (((File.Exists(exdFile(0)))) || ((File.Exists(exdFile(1)))) || ((File.Exists(exdFile(2))))))
-            // Checks to see if there are EXD files saved for today, 1 day prior, 2 days prior
+            // Checks to see if there are EXD files saved for Monday, Sunday, or Saturday
             {
                 sendEmail();
             }
@@ -108,8 +108,8 @@ namespace Daily_Files
                 // Change the recipient in the next line if necessary.
                 Outlook.Recipient oRecip = (Outlook.Recipient)oRecips.Add("morganchristopherthompson@gmail.com");
                 oRecip.Resolve();
-                // Send.
-                //oMsg.Send();
+                //Send.
+                oMsg.Send();
                 // Clean up.
                 oRecip = null;
                 oRecips = null;
@@ -118,6 +118,8 @@ namespace Daily_Files
             }//end of try block
             catch (Exception ex)
             {
+                logBox.AppendText(Environment.NewLine);
+                logBox.AppendText(ex.ToString());
             }//end of catch
         }
  
@@ -159,7 +161,7 @@ namespace Daily_Files
             proc.WaitForExit();
         }
 
-        private string filePath(int value)
+        private string WeekdayFilePath(int value)
         {
             string filePath = @"\\NEWDISTED2\ftproot\archive\archive_ao_regfile";
             int year = DateTime.Today.Year;
@@ -168,10 +170,54 @@ namespace Daily_Files
             int day = DateTime.Today.Day - value;
             string code = @"0946.txt";
             string fileDate = year.ToString();
-            if (month <= 10) { fileDate += zero.ToString(); }
-            else { fileDate += month.ToString(); }
-            if (day <= 10) { fileDate += zero.ToString(); }
-            else { fileDate += day.ToString(); }
+            if (month < 10) 
+            { 
+                fileDate += zero.ToString();
+                fileDate += month.ToString();
+            }
+            else 
+            { 
+                fileDate += month.ToString(); 
+            }
+            if (day < 10)
+            { 
+                fileDate += zero.ToString();
+                fileDate += day.ToString();
+            }
+            else 
+            {
+                fileDate += day.ToString();
+            }
+            fileDate += code;
+            filePath += fileDate;
+            return filePath;
+        }
+
+        private string dateRangeFilePath(int value, int year, int day, int month)
+        {
+            string filePath = @"\\NEWDISTED2\ftproot\archive\archive_ao_regfile";
+            int zero = 0;
+            day -= value;
+            string code = @"0946.txt";
+            string fileDate = year.ToString();
+            if (month < 10)
+            {
+                fileDate += zero.ToString();
+                fileDate += month.ToString();
+            }
+            else
+            {
+                fileDate += month.ToString();
+            }
+            if (day < 10)
+            {
+                fileDate += zero.ToString();
+                fileDate += day.ToString();
+            }
+            else
+            {
+                fileDate += day.ToString();
+            }
             fileDate += code;
             filePath += fileDate;
             return filePath;
@@ -194,42 +240,42 @@ namespace Daily_Files
         private void mondayButton_Click_1(object sender, EventArgs e)
         {
             //Copying the ao_regfile from Archive to Banner Files
-            if (File.Exists(filePath(0)))
+            if (File.Exists(WeekdayFilePath(0)))
             {
-                File.Copy(filePath(0), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Monday's file
+                File.Copy(WeekdayFilePath(0), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Monday's file
                 logBox.AppendText(Environment.NewLine);
                 logBox.AppendText("Copying today's file...");
                 openAccess();
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + filePath(0) + " could not be found!");
+                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(0) + " could not be found!");
                 return;
             }
 
-            if (File.Exists(filePath(1)))
+            if (File.Exists(WeekdayFilePath(1)))
             {
-                File.Copy(filePath(1), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Sunday's file
+                File.Copy(WeekdayFilePath(1), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Sunday's file
                 logBox.AppendText(Environment.NewLine);
                 logBox.AppendText("Copying Sunday's file...");
                 openAccess();
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + filePath(1) + " could not be found!");
+                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(1) + " could not be found!");
                 return;
             }
 
-            if (File.Exists(filePath(2)))
+            if (File.Exists(WeekdayFilePath(2)))
             {
-                File.Copy(filePath(2), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Saturday's file
+                File.Copy(WeekdayFilePath(2), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Saturday's file
                 logBox.AppendText(Environment.NewLine);
                 logBox.AppendText("Copying Saturday's file...");
                 openAccess();
             }
             else
             {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + filePath(2) + " could not be found!");
+                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(2) + " could not be found!");
                 return;
             }
 
@@ -247,14 +293,19 @@ namespace Daily_Files
             if (dateTo.Value <= dateFrom.Value) { System.Windows.Forms.MessageBox.Show("Error: The 'To' date is before or equal to the 'From' date. Please fix this to continue."); }
             else
             {
-                for (int i = 0; i < days; i++)
+                for (int i = 0; i <= days; i++)
                 {
-                    if (File.Exists(filePath(i))) 
+                    if (File.Exists(dateRangeFilePath(i, dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month))) 
                     { 
-                    File.Copy(filePath(i), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+                    File.Copy(dateRangeFilePath(i,dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
                     openAccess();
                     }
+                    else
+                    {
+                        logBox.AppendText(Environment.NewLine);
+                        logBox.AppendText(WeekdayFilePath(i));
                     }
+                }
             }
         }
     }
