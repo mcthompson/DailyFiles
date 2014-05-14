@@ -22,6 +22,7 @@ namespace Daily_Files
         public Form1()
         {
             InitializeComponent();
+            logBox.ScrollBars = ScrollBars.Vertical;
             dateTo.MaxDate = DateTime.Today;
             dateFrom.MaxDate = DateTime.Today;
             DayOfWeek today = DateTime.Today.DayOfWeek;
@@ -283,32 +284,49 @@ namespace Daily_Files
             email();
         }
 
+        private string exdDate(int i)
+        {
+            logBox.AppendText(Environment.NewLine);
+            string text = "Save EXD file for date: ";
+            int day = dateTo.Value.Day - i;
+            int month = dateTo.Value.Month;
+            string date = month.ToString() + "/" + day.ToString();
+            text += date;
+            return text;
+        }
+
+
         private void button1_Click(object sender, EventArgs e)
         {
-            int fromDate = dateFrom.Value.Day;
-            int toDate = dateTo.Value.Day;
-            int days = toDate - fromDate;
-            Console.WriteLine(days);
-           
-            if (dateTo.Value <= dateFrom.Value) { System.Windows.Forms.MessageBox.Show("Error: The 'To' date is before or equal to the 'From' date. Please fix this to continue."); }
-            else
+            List<DateTime> allDates = new List<DateTime>();
+            for (DateTime date = monthCalendar1.SelectionStart; date <= monthCalendar1.SelectionEnd; date = date.AddDays(1))
+                allDates.Add(date);
+            for (int i = 0; i < allDates.Count; i++)
             {
-                for (int i = 0; i <= days; i++)
-                {
-                    if (File.Exists(dateRangeFilePath(i, dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month))) 
-                    { 
-                    File.Copy(dateRangeFilePath(i,dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
-                    openAccess();
-                    }
-                    else
-                    {
-                        logBox.AppendText(Environment.NewLine);
-                        logBox.AppendText("There is no archive for: ");
-                        logBox.AppendText(WeekdayFilePath(i));
-                    }
-                }
-                Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files 
+                logBox.AppendText(Environment.NewLine);
+                logBox.AppendText(allDates[i].ToString());
             }
+            //if (dateTo.Value <= dateFrom.Value) { System.Windows.Forms.MessageBox.Show("Error: The 'To' date is before or equal to the 'From' date. Please fix this to continue."); }
+            //else
+            //{
+            //    for (int i = 0; i <= days; i++)
+            //    {
+            //        if (File.Exists(dateRangeFilePath(i, dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month))) 
+            //        { 
+            //        File.Copy(dateRangeFilePath(i,dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+            //        logBox.AppendText(exdDate(i));
+            //        openAccess();
+                    
+            //        }
+            //        else
+            //        {
+            //            logBox.AppendText(Environment.NewLine);
+            //            logBox.AppendText("There is no file named: ");
+            //            logBox.AppendText(WeekdayFilePath(i));
+            //        }
+            //    }
+            //    Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files 
+            //}
         }
     }
 }
