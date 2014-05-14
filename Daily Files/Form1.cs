@@ -40,69 +40,85 @@ namespace Daily_Files
             DayOfWeek today = DateTime.Today.DayOfWeek;
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Checking for EXD files...");
-            if (((File.Exists(exdFile(0)))) || ((File.Exists(exdFile(1)))) || ((File.Exists(exdFile(2)))))
+            if(((File.Exists(exdFile(0))) == true) && (((today == DayOfWeek.Tuesday) || (today == DayOfWeek.Wednesday) || (today == DayOfWeek.Thursday)
+            || (today == DayOfWeek.Friday))))
+            {
+                sendEmail();
+            }
+
+            else if ((today == DayOfWeek.Monday) && (((File.Exists(exdFile(0)))) || ((File.Exists(exdFile(1)))) || ((File.Exists(exdFile(2))))))
             // Checks to see if there are EXD files saved for today, 1 day prior, 2 days prior
             {
-                Process.Start(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Microsoft Office Outlook 2007.lnk");
-                Task.Delay(10000);
-                logBox.AppendText(Environment.NewLine);
-                logBox.AppendText("Sending email...");
-                try
-                {
-                    // Create the Outlook application.
-                    Outlook.Application oApp = new Outlook.Application();
-                    // Create a new mail item.
-                    Outlook.MailItem oMsg = (Outlook.MailItem)oApp.CreateItem(Outlook.OlItemType.olMailItem);
-                    // Set HTMLBody. 
-                    //add the body of the email
-                    oMsg.HTMLBody = "Please see attached.";
-                    //Add an attachment.
-                    String sDisplayName = "MyAttachment";
-                    int iPosition = (int)oMsg.Body.Length + 1;
-                    int iAttachType = (int)Outlook.OlAttachmentType.olByValue;
-                    //now attached the file
-                    if (today == DayOfWeek.Monday)
-                    {
-                        if ((File.Exists(exdFile(0)))) // Checks to see if there is an EXD file for Monday 
-                        { Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName); }
-
-                        if ((File.Exists(exdFile(1)))) // Checks to see if there is an EXD file for Sunday 
-                        { Outlook.Attachment bAttach = oMsg.Attachments.Add(exdFile(1), iAttachType, iPosition, sDisplayName); }
-
-                        if ((File.Exists(exdFile(2)))) // Checks to see if there is an EXD file for Saturday
-                        { Outlook.Attachment cAttach = oMsg.Attachments.Add(exdFile(2), iAttachType, iPosition, sDisplayName); }
-                    }
-                    else
-                    {
-                        if ((File.Exists(exdFile(0))))
-                        { Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName); }
-                    }
-
-                    //Subject line
-                    oMsg.Subject = "EXD Daily Files";
-                    // Add a recipient.
-                    Outlook.Recipients oRecips = (Outlook.Recipients)oMsg.Recipients;
-                    // Change the recipient in the next line if necessary.
-                    Outlook.Recipient oRecip = (Outlook.Recipient)oRecips.Add("morganchristopherthompson@gmail.com");
-                    oRecip.Resolve();
-                    // Send.
-                    oMsg.Send();
-                    // Clean up.
-                    oRecip = null;
-                    oRecips = null;
-                    oMsg = null;
-                    oApp = null;
-                }//end of try block
-                catch (Exception ex)
-                {
-                }//end of catch
+                sendEmail();
             }
             else
             {
                 logBox.AppendText(Environment.NewLine);
-                logBox.AppendText("No EXD files found! No email will be sent.");
+                logBox.AppendText("No EXD files found!");
+                logBox.AppendText(Environment.NewLine);
+                logBox.AppendText("No email will be sent.");
                 return;
             }
+        }
+
+        private void sendEmail()
+        {
+            DayOfWeek today = DateTime.Today.DayOfWeek;
+            Process.Start(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Microsoft Office Outlook 2007.lnk");
+            Task.Delay(10000);
+            logBox.AppendText(Environment.NewLine);
+            logBox.AppendText("Sending email...");
+            try
+            {
+                // Create the Outlook application.
+                Outlook.Application oApp = new Outlook.Application();
+                // Create a new mail item.
+                Outlook.MailItem oMsg = (Outlook.MailItem)oApp.CreateItem(Outlook.OlItemType.olMailItem);
+                // Set HTMLBody. 
+                //add the body of the email
+                oMsg.HTMLBody = "Please see attached.";
+                //Add an attachment.
+                String sDisplayName = "MyAttachment";
+                int iPosition = (int)oMsg.Body.Length + 1;
+                int iAttachType = (int)Outlook.OlAttachmentType.olByValue;
+                //now attached the file
+                if (today == DayOfWeek.Monday)
+                {
+                    if ((File.Exists(exdFile(0)))) // Checks to see if there is an EXD file for Monday 
+                    { Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName); }
+
+                    if ((File.Exists(exdFile(1)))) // Checks to see if there is an EXD file for Sunday 
+                    { Outlook.Attachment bAttach = oMsg.Attachments.Add(exdFile(1), iAttachType, iPosition, sDisplayName); }
+
+                    if ((File.Exists(exdFile(2)))) // Checks to see if there is an EXD file for Saturday
+                    { Outlook.Attachment cAttach = oMsg.Attachments.Add(exdFile(2), iAttachType, iPosition, sDisplayName); }
+                }
+                else
+                {
+                    if ((File.Exists(exdFile(0))))
+                    {
+                        Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName);
+                    }
+                }
+
+                //Subject line
+                oMsg.Subject = "EXD Daily Files";
+                // Add a recipient.
+                Outlook.Recipients oRecips = (Outlook.Recipients)oMsg.Recipients;
+                // Change the recipient in the next line if necessary.
+                Outlook.Recipient oRecip = (Outlook.Recipient)oRecips.Add("morganchristopherthompson@gmail.com");
+                oRecip.Resolve();
+                // Send.
+                //oMsg.Send();
+                // Clean up.
+                oRecip = null;
+                oRecips = null;
+                oMsg = null;
+                oApp = null;
+            }//end of try block
+            catch (Exception ex)
+            {
+            }//end of catch
         }
  
         private string exdFile(int value)
