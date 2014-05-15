@@ -36,11 +36,7 @@
             this.mondayButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.logBox = new System.Windows.Forms.TextBox();
-            this.dateTo = new System.Windows.Forms.DateTimePicker();
-            this.dateFrom = new System.Windows.Forms.DateTimePicker();
-            this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
@@ -113,70 +109,28 @@
             // 
             // logBox
             // 
-            this.logBox.Location = new System.Drawing.Point(215, 12);
+            this.logBox.Location = new System.Drawing.Point(12, 262);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
             this.logBox.ReadOnly = true;
-            this.logBox.Size = new System.Drawing.Size(216, 235);
+            this.logBox.Size = new System.Drawing.Size(517, 90);
             this.logBox.TabIndex = 5;
-            // 
-            // dateTo
-            // 
-            this.dateTo.CalendarFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateTo.Location = new System.Drawing.Point(234, 49);
-            this.dateTo.Name = "dateTo";
-            this.dateTo.Size = new System.Drawing.Size(99, 21);
-            this.dateTo.TabIndex = 6;
-            // 
-            // dateFrom
-            // 
-            this.dateFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateFrom.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dateFrom.Location = new System.Drawing.Point(105, 49);
-            this.dateFrom.MaxDate = new System.DateTime(2014, 5, 13, 0, 0, 0, 0);
-            this.dateFrom.Name = "dateFrom";
-            this.dateFrom.Size = new System.Drawing.Size(99, 21);
-            this.dateFrom.TabIndex = 7;
-            this.dateFrom.Value = new System.DateTime(2014, 5, 13, 0, 0, 0, 0);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(212, 53);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(23, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "To:";
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.monthCalendar1);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.dateTo);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.dateFrom);
-            this.panel1.Location = new System.Drawing.Point(12, 262);
+            this.panel1.Location = new System.Drawing.Point(213, 9);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(419, 113);
+            this.panel1.Size = new System.Drawing.Size(316, 238);
             this.panel1.TabIndex = 9;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(73, 53);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(33, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "From:";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(163, 76);
+            this.button1.Location = new System.Drawing.Point(121, 203);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 24);
             this.button1.TabIndex = 10;
@@ -188,16 +142,19 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(29, 21);
+            this.label4.Location = new System.Drawing.Point(12, 11);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(353, 15);
+            this.label4.Size = new System.Drawing.Size(292, 15);
             this.label4.TabIndex = 9;
-            this.label4.Text = "Or, select a date range for which you wish to generate EXD files.";
+            this.label4.Text = "Or, click and drag a date range to generate EXD files";
             // 
             // monthCalendar1
             // 
-            this.monthCalendar1.Location = new System.Drawing.Point(443, 57);
+            this.monthCalendar1.Location = new System.Drawing.Point(45, 35);
+            this.monthCalendar1.MaxSelectionCount = 31;
             this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.ShowToday = false;
+            this.monthCalendar1.ShowTodayCircle = false;
             this.monthCalendar1.TabIndex = 12;
             // 
             // Form1
@@ -205,8 +162,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.ClientSize = new System.Drawing.Size(675, 385);
-            this.Controls.Add(this.monthCalendar1);
+            this.ClientSize = new System.Drawing.Size(541, 363);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.logBox);
             this.Controls.Add(this.panel3);
@@ -235,13 +191,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button mondayButton;
         private System.Windows.Forms.TextBox logBox;
-        private System.Windows.Forms.DateTimePicker dateTo;
-        private System.Windows.Forms.DateTimePicker dateFrom;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.MonthCalendar monthCalendar1;
     }
 }

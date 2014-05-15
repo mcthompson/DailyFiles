@@ -23,8 +23,7 @@ namespace Daily_Files
         {
             InitializeComponent();
             logBox.ScrollBars = ScrollBars.Vertical;
-            dateTo.MaxDate = DateTime.Today;
-            dateFrom.MaxDate = DateTime.Today;
+            monthCalendar1.MaxDate = DateTime.Today;
             DayOfWeek today = DateTime.Today.DayOfWeek;
             if (today == DayOfWeek.Monday)
             {
@@ -32,22 +31,46 @@ namespace Daily_Files
             }
             else
             {
-                mondayButton.Enabled = false;
+                //mondayButton.Enabled = false;
             }
         }
 
-        public void email()
+        private string getEXDPath (string day)
+        {   
+            DateTime today = DateTime.Today;
+            if (day == "monday")
+            {
+                return exdFile(today.Day, today.Month, today.Year);
+            }
+            if (day == "sunday")
+            {
+                DateTime yesterday = today.AddDays(-1); // Sunday
+                return exdFile(yesterday.Day, yesterday.Month, yesterday.Year);
+            }
+            if (day == "saturday")
+            {
+                DateTime minusTwoDays = today.AddDays(-2); // Saturday
+                return exdFile(minusTwoDays.Day, minusTwoDays.Month, minusTwoDays.Year);
+            }
+            else
+            {
+                string nil = "";
+                return nil;
+            }
+        }
+
+        private void email()
         {
-            DayOfWeek today = DateTime.Today.DayOfWeek;
+            DateTime today = DateTime.Today;
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Checking for EXD files...");
-            if(((File.Exists(exdFile(0))) == true) && (((today == DayOfWeek.Tuesday) || (today == DayOfWeek.Wednesday) || (today == DayOfWeek.Thursday)
-            || (today == DayOfWeek.Friday)))) //If it's not monday, just check if there is an EXD file for that day
+            if (((File.Exists(getEXDPath("monday"))) == true) && (((today.DayOfWeek == DayOfWeek.Tuesday) || (today.DayOfWeek == DayOfWeek.Wednesday) || (today.DayOfWeek == DayOfWeek.Thursday)
+            || (today.DayOfWeek == DayOfWeek.Friday)))) //If it's not monday, just check if there is an EXD file for that day
             {
                 sendEmail();
             }
 
-            else if ((today == DayOfWeek.Monday) && (((File.Exists(exdFile(0)))) || ((File.Exists(exdFile(1)))) || ((File.Exists(exdFile(2))))))
+            else if ((today.DayOfWeek == DayOfWeek.Monday) && ((File.Exists(getEXDPath("monday"))) || ((File.Exists(getEXDPath("sunday")))) || ((File.Exists(getEXDPath("saturday"))))))
             // Checks to see if there are EXD files saved for Monday, Sunday, or Saturday
             {
                 sendEmail();
@@ -64,7 +87,7 @@ namespace Daily_Files
 
         private void sendEmail()
         {
-            DayOfWeek today = DateTime.Today.DayOfWeek;
+            DateTime today = DateTime.Today;
             Process.Start(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Office\Microsoft Office Outlook 2007.lnk");
             Task.Delay(10000);
             logBox.AppendText(Environment.NewLine);
@@ -83,22 +106,22 @@ namespace Daily_Files
                 int iPosition = (int)oMsg.Body.Length + 1;
                 int iAttachType = (int)Outlook.OlAttachmentType.olByValue;
                 //now attached the file
-                if (today == DayOfWeek.Monday)
+                if (today.DayOfWeek == DayOfWeek.Monday)
                 {
-                    if ((File.Exists(exdFile(0)))) // Checks to see if there is an EXD file for Monday 
-                    { Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName); }
+                    if ((File.Exists(getEXDPath("monday")))) // Checks to see if there is an EXD file for Monday 
+                    { Outlook.Attachment aAttach = oMsg.Attachments.Add(getEXDPath("monday"), iAttachType, iPosition, sDisplayName); }
 
-                    if ((File.Exists(exdFile(1)))) // Checks to see if there is an EXD file for Sunday 
-                    { Outlook.Attachment bAttach = oMsg.Attachments.Add(exdFile(1), iAttachType, iPosition, sDisplayName); }
+                    if ((File.Exists(getEXDPath("sunday")))) // Checks to see if there is an EXD file for Sunday 
+                    { Outlook.Attachment bAttach = oMsg.Attachments.Add(getEXDPath("sunday"), iAttachType, iPosition, sDisplayName); }
 
-                    if ((File.Exists(exdFile(2)))) // Checks to see if there is an EXD file for Saturday
-                    { Outlook.Attachment cAttach = oMsg.Attachments.Add(exdFile(2), iAttachType, iPosition, sDisplayName); }
+                    if ((File.Exists(getEXDPath("saturday")))) // Checks to see if there is an EXD file for Saturday
+                    { Outlook.Attachment cAttach = oMsg.Attachments.Add(getEXDPath("saturday"), iAttachType, iPosition, sDisplayName); }
                 }
                 else
                 {
-                    if ((File.Exists(exdFile(0))))
+                    if ((File.Exists(exdFile(today.Day, today.Month, today.Year))))
                     {
-                        Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(0), iAttachType, iPosition, sDisplayName);
+                        Outlook.Attachment aAttach = oMsg.Attachments.Add(exdFile(today.Day, today.Month, today.Year), iAttachType, iPosition, sDisplayName);
                     }
                 }
 
@@ -124,13 +147,11 @@ namespace Daily_Files
             }//end of catch
         }
  
-        private string exdFile(int value)
+        private string exdFile(int day, int month, int year)
         {
             string file = @"J:\Academic Outreach\Banner Files\EXD\EXD_";
             int zero = 0;
-            int month = DateTime.Today.Month;
-            int day = DateTime.Today.Day - value;
-            int year = DateTime.Today.Year;
+           
             //File path includes a zero before month and day, but DateTime day/month does not contain zero. 
             //This will add zero before month/day if needed. 
             if (month <= 10) 
@@ -162,13 +183,10 @@ namespace Daily_Files
             proc.WaitForExit();
         }
 
-        private string WeekdayFilePath(int value)
+        private string WeekdayFilePath(int day, int month, int year)
         {
             string filePath = @"\\NEWDISTED2\ftproot\archive\archive_ao_regfile";
-            int year = DateTime.Today.Year;
             int zero = 0;
-            int month = DateTime.Today.Month;
-            int day = DateTime.Today.Day - value;
             string code = @"0946.txt";
             string fileDate = year.ToString();
             if (month < 10) 
@@ -194,11 +212,10 @@ namespace Daily_Files
             return filePath;
         }
 
-        private string dateRangeFilePath(int value, int year, int day, int month)
+        private string dateRangeFilePath( int year, int day, int month)
         {
             string filePath = @"\\NEWDISTED2\ftproot\archive\archive_ao_regfile";
             int zero = 0;
-            day -= value;
             string code = @"0946.txt";
             string fileDate = year.ToString();
             if (month < 10)
@@ -240,60 +257,63 @@ namespace Daily_Files
 
         private void mondayButton_Click_1(object sender, EventArgs e)
         {
-            //Copying the ao_regfile from Archive to Banner Files
-            if (File.Exists(WeekdayFilePath(0)))
-            {
-                File.Copy(WeekdayFilePath(0), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Monday's file
-                logBox.AppendText(Environment.NewLine);
-                logBox.AppendText("Copying today's file...");
-                openAccess();
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(0) + " could not be found!");
-                return;
-            }
+            DateTime today = DateTime.Today;
 
-            if (File.Exists(WeekdayFilePath(1)))
-            {
-                File.Copy(WeekdayFilePath(1), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Sunday's file
-                logBox.AppendText(Environment.NewLine);
-                logBox.AppendText("Copying Sunday's file...");
-                openAccess();
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(1) + " could not be found!");
-                return;
-            }
-
-            if (File.Exists(WeekdayFilePath(2)))
-            {
-                File.Copy(WeekdayFilePath(2), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);  //This is Saturday's file
-                logBox.AppendText(Environment.NewLine);
-                logBox.AppendText("Copying Saturday's file...");
-                openAccess();
-            }
-            else
-            {
-                System.Windows.Forms.MessageBox.Show("Error! The file: " + WeekdayFilePath(2) + " could not be found!");
-                return;
-            }
-
-            //Now we've saved all of the EXD files... let's open that email!
+                if (File.Exists(WeekdayFilePath(today.Day,today.Month, today.Year)))
+                {
+                    //This is Monday's file
+                    File.Copy(WeekdayFilePath(today.Day,today.Month, today.Year), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("Creating EXD file for today...");
+                    openAccess();
+                }
+                else
+                {
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("The archive file for today was not found...");
+                }
+                
+                DateTime yesterday = today.AddDays(-1); // Yesterday
+                if (File.Exists(WeekdayFilePath(yesterday.Day, yesterday.Month, yesterday.Year)))
+                {
+                    File.Copy(WeekdayFilePath(yesterday.Day, yesterday.Month, yesterday.Year), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("Creating EXD file for Sunday...");
+                    openAccess();
+                }
+                else
+                {
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("The archive file for Sunday was not found...");
+                }
+                
+                DateTime minusTwoDays = today.AddDays(-2); // Saturday
+                if (File.Exists(WeekdayFilePath(minusTwoDays.Day, minusTwoDays.Month, minusTwoDays.Year)))
+                {
+                    File.Copy(WeekdayFilePath(minusTwoDays.Day, minusTwoDays.Month, minusTwoDays.Year), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("Creating EXD file for Saturday...");
+                    openAccess();
+                }
+                else
+                {
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("The archive file for Saturday was not found...");
+                }
+            //Saved all of the EXD files... sending email!
             email();
-        }
+        }  
 
-        private string exdDate(int i)
-        {
-            logBox.AppendText(Environment.NewLine);
-            string text = "Save EXD file for date: ";
-            int day = dateTo.Value.Day - i;
-            int month = dateTo.Value.Month;
-            string date = month.ToString() + "/" + day.ToString();
-            text += date;
-            return text;
-        }
+       // private string exdDate(int i)
+       // {
+           // logBox.AppendText(Environment.NewLine);
+           // string text = "Save EXD file for date: ";
+           // int day = monthCalendar1.Day - i;
+           // int month = dateTo.Value.Month;
+            //string date = month.ToString() + "/" + day.ToString();
+            //text += date;
+           // return text;
+       // }
 
 
         private void button1_Click(object sender, EventArgs e)
@@ -303,30 +323,32 @@ namespace Daily_Files
                 allDates.Add(date);
             for (int i = 0; i < allDates.Count; i++)
             {
-                logBox.AppendText(Environment.NewLine);
-                logBox.AppendText(allDates[i].ToString());
+                if (File.Exists(dateRangeFilePath(allDates[i].Year, allDates[i].Day, allDates[i].Month)))
+                {
+                    File.Copy(dateRangeFilePath(allDates[i].Year, allDates[i].Day, allDates[i].Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("Creating EXD file for: ");
+                    logBox.AppendText(allDates[i].Month.ToString());
+                    logBox.AppendText("/");
+                    logBox.AppendText(allDates[i].Day.ToString());
+                    logBox.AppendText("/");
+                    logBox.AppendText(allDates[i].Year.ToString());
+                    openAccess();
+                }
+                else
+                {
+                    logBox.AppendText(Environment.NewLine);
+                    logBox.AppendText("There is no archive file for: ");
+                    logBox.AppendText(allDates[i].Month.ToString());
+                    logBox.AppendText("/");
+                    logBox.AppendText(allDates[i].Day.ToString());
+                    logBox.AppendText("/");
+                    logBox.AppendText(allDates[i].Year.ToString());
+                }
             }
-            //if (dateTo.Value <= dateFrom.Value) { System.Windows.Forms.MessageBox.Show("Error: The 'To' date is before or equal to the 'From' date. Please fix this to continue."); }
-            //else
-            //{
-            //    for (int i = 0; i <= days; i++)
-            //    {
-            //        if (File.Exists(dateRangeFilePath(i, dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month))) 
-            //        { 
-            //        File.Copy(dateRangeFilePath(i,dateTo.Value.Year, dateTo.Value.Day, dateTo.Value.Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
-            //        logBox.AppendText(exdDate(i));
-            //        openAccess();
-                    
-            //        }
-            //        else
-            //        {
-            //            logBox.AppendText(Environment.NewLine);
-            //            logBox.AppendText("There is no file named: ");
-            //            logBox.AppendText(WeekdayFilePath(i));
-            //        }
-            //    }
-            //    Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files 
-            //}
+            Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files
+            logBox.AppendText(Environment.NewLine);
+            logBox.AppendText("Done!");
         }
     }
 }
