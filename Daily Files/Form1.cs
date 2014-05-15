@@ -31,7 +31,7 @@ namespace Daily_Files
             }
             else
             {
-                //mondayButton.Enabled = false;
+                mondayButton.Enabled = false;
             }
         }
 
@@ -304,20 +304,41 @@ namespace Daily_Files
             email();
         }  
 
-       // private string exdDate(int i)
-       // {
-           // logBox.AppendText(Environment.NewLine);
-           // string text = "Save EXD file for date: ";
-           // int day = monthCalendar1.Day - i;
-           // int month = dateTo.Value.Month;
-            //string date = month.ToString() + "/" + day.ToString();
-            //text += date;
-           // return text;
-       // }
-
+        private string exdFileName(int month, int day, int year)
+        {
+            int zero = 0;
+            string file = "EXD_";
+            //File path includes a zero before month and day, but DateTime day/month does not contain zero. 
+            //This will add zero before month/day if needed. 
+            if (month <= 10) 
+            { 
+                file += zero.ToString();
+                file += month.ToString();
+            }
+            else { file += month.ToString(); }
+            if (day <= 10) 
+            { 
+                file += zero.ToString();
+                file += day.ToString();
+            }
+            else { file += day.ToString(); }
+            file += year.ToString();
+            file += ".xls";
+            return file;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            string folder = @"C:\Users\aoisstudent\Desktop\EXD Files Generated on ";
+            folder += DateTime.Today.Month.ToString();
+            folder += ".";
+            folder += DateTime.Today.Day.ToString();
+            folder += ".";
+            folder += DateTime.Today.Year.ToString();
+            System.IO.Directory.CreateDirectory(folder);
+            folder += @"\";
+            string interFolder = folder;
+
             List<DateTime> allDates = new List<DateTime>();
             for (DateTime date = monthCalendar1.SelectionStart; date <= monthCalendar1.SelectionEnd; date = date.AddDays(1))
                 allDates.Add(date);
@@ -334,6 +355,13 @@ namespace Daily_Files
                     logBox.AppendText("/");
                     logBox.AppendText(allDates[i].Year.ToString());
                     openAccess();
+                    
+                    if (File.Exists(exdFile(allDates[i].Day, allDates[i].Month, allDates[i].Year)))
+                    {
+                        folder += (exdFileName(allDates[i].Month, allDates[i].Day, allDates[i].Year));
+                        File.Copy(exdFile(allDates[i].Day, allDates[i].Month, allDates[i].Year), folder, true);
+                        folder = interFolder;
+                    }
                 }
                 else
                 {
@@ -346,7 +374,9 @@ namespace Daily_Files
                     logBox.AppendText(allDates[i].Year.ToString());
                 }
             }
-            Process.Start(@"J:\Academic Outreach\Banner Files\EXD"); //Open up the folder that contains EXD files
+             
+            Process.Start(folder); //Open up the new folder that contains newly created EXD files
+            
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Done!");
         }
