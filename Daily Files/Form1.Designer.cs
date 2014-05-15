@@ -37,9 +37,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.logBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.button1 = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -57,7 +57,7 @@
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.panel2.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.tfButton);
@@ -78,7 +78,7 @@
             // 
             // panel3
             // 
-            this.panel3.BackColor = System.Drawing.SystemColors.Control;
+            this.panel3.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3.Controls.Add(this.mondayButton);
             this.panel3.Controls.Add(this.label3);
@@ -109,6 +109,7 @@
             // 
             // logBox
             // 
+            this.logBox.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.logBox.Location = new System.Drawing.Point(12, 262);
             this.logBox.Multiline = true;
             this.logBox.Name = "logBox";
@@ -118,7 +119,7 @@
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.monthCalendar1);
             this.panel1.Controls.Add(this.button1);
@@ -127,6 +128,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(316, 238);
             this.panel1.TabIndex = 9;
+            // 
+            // monthCalendar1
+            // 
+            this.monthCalendar1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.monthCalendar1.Location = new System.Drawing.Point(45, 35);
+            this.monthCalendar1.MaxSelectionCount = 31;
+            this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.ShowToday = false;
+            this.monthCalendar1.ShowTodayCircle = false;
+            this.monthCalendar1.TabIndex = 12;
             // 
             // button1
             // 
@@ -147,15 +158,6 @@
             this.label4.Size = new System.Drawing.Size(292, 15);
             this.label4.TabIndex = 9;
             this.label4.Text = "Or, click and drag a date range to generate EXD files";
-            // 
-            // monthCalendar1
-            // 
-            this.monthCalendar1.Location = new System.Drawing.Point(45, 35);
-            this.monthCalendar1.MaxSelectionCount = 31;
-            this.monthCalendar1.Name = "monthCalendar1";
-            this.monthCalendar1.ShowToday = false;
-            this.monthCalendar1.ShowTodayCircle = false;
-            this.monthCalendar1.TabIndex = 12;
             // 
             // Form1
             // 

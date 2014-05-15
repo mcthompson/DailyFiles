@@ -25,6 +25,7 @@ namespace Daily_Files
             logBox.ScrollBars = ScrollBars.Vertical;
             monthCalendar1.MaxDate = DateTime.Today;
             DayOfWeek today = DateTime.Today.DayOfWeek;
+
             if (today == DayOfWeek.Monday)
             {
                 tfButton.Enabled = false;
@@ -329,7 +330,8 @@ namespace Daily_Files
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string folder = @"C:\Users\aoisstudent\Desktop\EXD Files Generated on ";
+            string folder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            folder += @"\EXD Files Generated on ";
             folder += DateTime.Today.Month.ToString();
             folder += ".";
             folder += DateTime.Today.Day.ToString();
