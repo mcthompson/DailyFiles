@@ -13,7 +13,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Office;
 using Outlook = Microsoft.Office.Interop.Outlook;
+using System.Reflection;
+using Access = Microsoft.Office.Interop.Access;
+using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop;
 
 namespace Daily_Files
 {
@@ -131,7 +136,7 @@ namespace Daily_Files
                 // Add a recipient.
                 Outlook.Recipients oRecips = (Outlook.Recipients)oMsg.Recipients;
                 // Change the recipient in the next line if necessary.
-                Outlook.Recipient oRecip = (Outlook.Recipient)oRecips.Add("morganchristopherthompson@gmail.com");
+                Outlook.Recipient oRecip = (Outlook.Recipient)oRecips.Add("aschuber@ccs.ua.edu");
                 oRecip.Resolve();
                 //Send.
                 oMsg.Send();
@@ -146,6 +151,10 @@ namespace Daily_Files
                 logBox.AppendText(Environment.NewLine);
                 logBox.AppendText(ex.ToString());
             }//end of catch
+            System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo(@"J:\Academic Outreach\Banner Files\BannerData.mdb");
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.Close();
+            return; 
         }
  
         private string exdFile(int day, int month, int year)
@@ -174,14 +183,42 @@ namespace Daily_Files
 
         private void openAccess()
         {
-            System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo(@"J:\Academic Outreach\Banner Files\BannerData.mdb");
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            logBox.AppendText(Environment.NewLine);
-            logBox.AppendText("Opening the Access Database...");
-            proc.StartInfo = p;
-            proc.Start();
-            //Running the Access Database to generate EXD Excel spreadsheet
-            proc.WaitForExit();
+            //System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo(@"J:\Academic Outreach\Banner Files\BannerData.mdb");
+            //System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            //logBox.AppendText(Environment.NewLine);
+            //logBox.AppendText("Opening the Access Database...");
+            //proc.StartInfo = p;
+            //proc.Start();
+            ////Running the Access Database to generate EXD Excel spreadsheet
+            //Task.Delay(10000);
+            //proc.WaitForExit();
+            //proc.Close();
+
+            Microsoft.Office.Interop.Access.Application oAccess = new Microsoft.Office.Interop.Access.Application();
+            oAccess.Visible = false;
+            oAccess.OpenCurrentDatabase(@"J:\Academic Outreach\Banner Files\BannerData.mdb", false, "");
+            string macro = "Automatic_Output";
+            oAccess.DoCmd.RunMacro(macro);
+        }
+
+        private void killAccess()
+        {
+            foreach (Process p in System.Diagnostics.Process.GetProcessesByName("MSACCESS"))
+            {
+                try
+                {
+                    p.Kill();
+                    p.WaitForExit(); // possibly with a timeout
+                }
+                catch (Win32Exception winException)
+                {
+                    // process was terminating or can't be terminated - deal with it
+                }
+                catch (InvalidOperationException invalidException)
+                {
+                    // process has already exited - might be able to let this one go
+                }
+            }
         }
 
         private string WeekdayFilePath(int day, int month, int year)
@@ -243,6 +280,7 @@ namespace Daily_Files
         }
 
         private void tfButton_Click(object sender, EventArgs e)
+
         {
             DayOfWeek today = DateTime.Today.DayOfWeek;
             Console.WriteLine(today);
@@ -254,6 +292,7 @@ namespace Daily_Files
             email();
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Done!");
+            killAccess();
         }
 
         private void mondayButton_Click_1(object sender, EventArgs e)
@@ -303,6 +342,9 @@ namespace Daily_Files
                 }
             //Saved all of the EXD files... sending email!
             email();
+            logBox.AppendText(Environment.NewLine);
+            logBox.AppendText("Done!");
+            killAccess();
         }  
 
         private string exdFileName(int month, int day, int year)
@@ -381,6 +423,7 @@ namespace Daily_Files
             
             logBox.AppendText(Environment.NewLine);
             logBox.AppendText("Done!");
+            killAccess();
         }
     }
 }
