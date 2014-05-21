@@ -287,7 +287,12 @@ namespace Daily_Files
             //Copying the ao_regfile to Banner Files
             System.IO.File.Copy(@"\\NEWDISTED2\ftproot\ao_regfile.txt", @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
             logBox.AppendText(Environment.NewLine);
-            logBox.AppendText("Copying ao_regfile to Banner Files...");
+            logBox.AppendText("Creating EXD file for: ");
+            logBox.AppendText(DateTime.Today.Month.ToString());
+            logBox.AppendText("/");
+            logBox.AppendText(DateTime.Today.Day.ToString());
+            logBox.AppendText("/");
+            logBox.AppendText(DateTime.Today.Year.ToString());
             openAccess();
             email();
             logBox.AppendText(Environment.NewLine);
@@ -391,14 +396,29 @@ namespace Daily_Files
                 if (File.Exists(dateRangeFilePath(allDates[i].Year, allDates[i].Day, allDates[i].Month)))
                 {
                     File.Copy(dateRangeFilePath(allDates[i].Year, allDates[i].Day, allDates[i].Month), @"J:\Academic Outreach\Banner Files\ao_regfile.txt", true);
-                    logBox.AppendText(Environment.NewLine);
-                    logBox.AppendText("Creating EXD file for: ");
-                    logBox.AppendText(allDates[i].Month.ToString());
-                    logBox.AppendText("/");
-                    logBox.AppendText(allDates[i].Day.ToString());
-                    logBox.AppendText("/");
-                    logBox.AppendText(allDates[i].Year.ToString());
-                    openAccess();
+                    
+                    if (File.Exists(exdFile(allDates[i].Day, allDates[i].Month, allDates[i].Year)))
+                    {
+                        logBox.AppendText(Environment.NewLine);
+                        logBox.AppendText("The EXD file for ");
+                        logBox.AppendText(allDates[i].Month.ToString());
+                        logBox.AppendText("/");
+                        logBox.AppendText(allDates[i].Day.ToString());
+                        logBox.AppendText("/");
+                        logBox.AppendText(allDates[i].Year.ToString());
+                        logBox.AppendText(" already exists! ");
+                    }
+                    else 
+                    {
+                        logBox.AppendText(Environment.NewLine);
+                        logBox.AppendText("Creating EXD file for: ");
+                        logBox.AppendText(allDates[i].Month.ToString());
+                        logBox.AppendText("/");
+                        logBox.AppendText(allDates[i].Day.ToString());
+                        logBox.AppendText("/");
+                        logBox.AppendText(allDates[i].Year.ToString());
+                        openAccess(); 
+                    }
                     
                     if (File.Exists(exdFile(allDates[i].Day, allDates[i].Month, allDates[i].Year)))
                     {
