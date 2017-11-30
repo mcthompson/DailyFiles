@@ -1,6 +1,6 @@
 ﻿//Created by Morgan Thompson 
 //Updated: 5/13/2014 
-//Contact: morganchristopherthompson@gmail.com 
+//Contact: morgan@artive.co
 
 using System;
 using System.Collections.Generic;
