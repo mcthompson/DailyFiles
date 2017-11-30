@@ -183,17 +183,6 @@ namespace Daily_Files
 
         private void openAccess()
         {
-            //System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo(@"J:\Academic Outreach\Banner Files\BannerData.mdb");
-            //System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            //logBox.AppendText(Environment.NewLine);
-            //logBox.AppendText("Opening the Access Database...");
-            //proc.StartInfo = p;
-            //proc.Start();
-            ////Running the Access Database to generate EXD Excel spreadsheet
-            //Task.Delay(10000);
-            //proc.WaitForExit();
-            //proc.Close();
-
             Microsoft.Office.Interop.Access.Application oAccess = new Microsoft.Office.Interop.Access.Application();
             oAccess.Visible = false;
             oAccess.OpenCurrentDatabase(@"J:\Academic Outreach\Banner Files\BannerData.mdb", false, "");
